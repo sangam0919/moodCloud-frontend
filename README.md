@@ -1,23 +1,25 @@
 ### 📚 목차
-👨‍👩‍👧‍👦 팀원 소개 및 역할
+ 팀원 소개 및 역할
 
-📌 프로젝트 소개
+ 프로젝트 소개
 
-🛠 기술 스택
+ 기술 스택
 
-✅ 팀 전체 회고
+ api 문서 
 
-💡 다음 프로젝트에 적용할 점
+ 팀 전체 회고
 
-🎬 My 작업 리스트
+ 다음 프로젝트에 적용할 점
 
-🧠 최종 후기
+ My 작업 리스트
+
+ 최종 후기
 
 
 
-## 📝 Mood Cloud 프로젝트 회고록
+##  Mood Cloud 프로젝트 회고록
 
-### 👨‍👩‍👧‍👦 팀원 소개 및 역할
+###  팀원 소개 및 역할
 
 | 이름 | 역할 | 주요 담당 업무 |
 |------|------|----------------|
@@ -26,7 +28,7 @@
 | 구다경 | 웹 프론트엔드 / 웹 백엔드 | 리스트 페이지, 내 정보 수정 페이지, 통계 페이지 |
 
 ---
-### 📌 프로젝트 소개
+###  프로젝트 소개
 
 사람들은 자신의 감정을 말로 표현하거나 객관적으로 바라보는 데 익숙지 않습니다.  
 하루를 살아내는 데 집중하다 보면 감정은 흘러보내기 쉽고,  
@@ -58,6 +60,151 @@
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)
 ---
 
+#  감정 기반 일기 플랫폼 API 문서
+
+이 프로젝트는 감정 분석 기반의 일기 작성, 팔로우, 통계, 카카오 로그인 등을 포함한 **Express.js 기반 백엔드 API**입니다.  
+웹과 앱에서 모두 사용할 수 있도록 엔드포인트를 분리하여 제공합니다.
+
+---
+
+##  공통 안내
+
+- 인증 방식  
+  - 웹: `authMiddleware` (JWT 쿠키)
+  - 앱: `authAppMiddleware` (Authorization 헤더에 토큰)
+
+- 업로드 경로  
+  - 이미지: `/upload` (form-data)
+
+---
+
+##  Diary (일기)
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/diary/:id` | 특정 일기 상세 조회 |
+| `GET` | `/diary/:id/edit` | 일기 수정을 위한 데이터 조회 |
+| `POST` | `/diary` | (앱) 일기 생성 |
+| `POST` | `/diary/app` | (앱) 일기 생성 |
+| `PUT` | `/diary/:id` | 일기 수정 |
+| `PUT` | `/diary/app/:id` | (앱) 일기 수정 |
+| `DELETE` | `/diary/delete/:id` | 일기 삭제 |
+| `GET` | `/main/mydiary` | 최근 일기 목록 (웹) |
+| `GET` | `/main/app/mydiary` | 전체 일기 목록 (앱) |
+| `GET` | `/main/diary/followed` | 팔로우한 사람들의 일기 (웹) |
+| `GET` | `/main/app/diary/followed` | 팔로우한 사람들의 일기 (앱) |
+| `GET` | `/public/:uid` | 특정 유저의 공개 일기 |
+
+---
+
+##  Comment (댓글)
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `POST` | `/diary/createComment` | 댓글 작성 (웹) |
+| `POST` | `/diary/app/createComment` | 댓글 작성 (앱) |
+
+---
+
+##  Follow (팔로우)
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `POST` | `/follow/create` | 팔로우 생성 |
+| `GET` | `/follow/status` | 팔로우 상태 확인 |
+| `DELETE` | `/follow/delete` | 팔로우 취소 |
+| `GET` | `/follow/app/followers` | 팔로워 목록 (앱) |
+| `GET` | `/follow/app/followings` | 팔로잉 목록 (앱) |
+| `GET` | `/follow/app/followings/todayDiaries` | 오늘 작성한 팔로우 일기 (앱) |
+
+---
+
+##  Emotion (감정)
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/main/emotionAll` | 감정 전체 조회 |
+| `POST` | `/main/emotionOnly` | 감정만 기록 (웹) |
+| `POST` | `/main/app/emotionOnly` | 감정만 기록 (앱) |
+| `POST` | `/diary/analyze` | AI 감정 분석 (gpt-3.5-turbo 사용) |
+
+---
+
+##  기록 상태
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/main/checkTodayWritten` | 오늘 기록 여부 (웹) |
+| `GET` | `/main/app/checkTodayWritten` | 오늘 기록 여부 (앱) |
+| `GET` | `/main/app/todayDiary` | 오늘 일기 조회 (앱) |
+| `GET` | `/main/app/randomDiary` | 랜덤 일기 조회 (앱) |
+
+---
+
+##  통계
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/main/streak` | 스트릭 조회 (웹) |
+| `GET` | `/main/written-weekdays` | 요일별 작성 통계 |
+| `GET` | `/main/written-dates` | 월별 작성 날짜 |
+| `GET` | `/main/app/streak` | 스트릭 조회 (앱) |
+| `GET` | `/main/app/written-dates` | 앱 전용 작성 날짜 |
+| `GET` | `/main/app/calendar-emotions` | 감정 달력 데이터 |
+| `GET` | `/stats/app/emotion` | 감정 통계 (앱) |
+| `GET` | `/stats/app/streak` | 스트릭 통계 (앱) |
+
+---
+
+##  유저 검색
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/search/users?q=닉네임` | 닉네임으로 유저 검색 |
+| `GET` | `/login/:id` | 유저 ID로 프로필 조회 |
+
+---
+
+##  유저 프로필
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/settings/me/profile` | 내 프로필 정보 조회 |
+| `PATCH` | `/settings/me/bio` | 자기소개 수정 |
+| `POST` | `/settings/me/profile-image` | 프로필 이미지 업로드 |
+| `GET` | `/settings/delete` | 회원 탈퇴 |
+| `GET` | `/settings/lists` | 내 팔로우 목록 |
+| `DELETE` | `/settings/:userIdToUnfollow` | 언팔로우 |
+
+---
+
+##  카카오 로그인
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `GET` | `/login/kakao` | 카카오 로그인 URL 반환 |
+| `GET` | `/login/kakao_login` | 웹 카카오 로그인 콜백 처리 |
+| `POST` | `/login/kakaoapp` | 앱 카카오 로그인 처리 |
+| `GET` | `/login/logout` | 로그아웃 처리 |
+| `GET` | `/login/user` | 로그인 유저 정보 (웹) |
+| `GET` | `/login/app/user` | 로그인 유저 정보 (앱) |
+
+---
+
+## 이미지 업로드
+
+| 메소드 | 엔드포인트 | 설명 |
+|--------|------------|------|
+| `POST` | `/diary/upload` | 이미지 업로드 (멀터, 파일 URL 반환) |
+
+---
+
+>  이 API 문서는 `Express + JWT + Sequelize + Kakao OAuth + OpenAI` 기반으로 설계되었습니다.  
+> 앱과 웹의 인증 방식을 구분하였으며, 가볍고 빠른 감정 일기 플랫폼을 목표로 합니다.
+
+
+
+---
 
 
 ### 팀 전체 회고
@@ -75,7 +222,7 @@
 
 ---
 
-### 💡 다음 프로젝트에 적용할 점
+###  다음 프로젝트에 적용할 점
 - 더욱 깔끔한 디자인  
 - 맡은 기능의 완벽함
 - 추가적인 꼭 필요한 기능(임시저장 등)
@@ -83,7 +230,7 @@
 ---
 
 
-### 🎬 my 작업 리스트
+###  my 작업 리스트
 
 <img src="./gif/Honeycam 2025-06-04 13-18-43.gif" width="600">
 
